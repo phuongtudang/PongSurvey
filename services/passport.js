@@ -14,25 +14,25 @@ passport.deserializeUser((id, done) => {
   });
 });
 
-//go to console.developers.google.com to get clientID and clientSecret
 passport.use(
-  new GoogleStrategy({
-    clientID: keys.googleClientID,
-    clientSecret: keys.googleClientSecret,
-    callbackURL: '/auth/google/callback',
-    proxy: true
-  }, (accessToken, refreshToken, profile, done) => {
-    User.findOne({ googleId: profile.id })
-      .then((existingUser) => {
-        if(existingUser){
-          //meaning we already have a user with this given id
-          done(null, existingUser)
-        } else {
-          //meaning we dont have a user with this given id, make a new user
-          new User ({ googleId: profile.id })
-            .save()
-            .then(user => (null, user));
-        }
-      })
-  })
+  new GoogleStrategy(
+    {
+      clientID: keys.googleClientID,
+      clientSecret: keys.googleClientSecret,
+      callbackURL: "/auth/google/callback",
+      proxy: true
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const existingUser = await User.findOne({ googleId: profile.id });
+
+      if (existingUser) {
+        //meaning we already have a user with this given id
+        done(null, existingUser);
+      } else {
+        //meaning we dont have a user with this given id, make a new user
+        const user = await new User({ googleId: profile.id }).save();
+        done(null, user);
+      }
+    }
+  )
 );
