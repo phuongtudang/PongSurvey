@@ -24,7 +24,7 @@ class Header extends Component {
       <nav>
         <div className="nav-wrapper">
           <Link to={ this.props.auth ? "/surveys" : "/" } className="brand-logo" style={{ margin: '0 10px' }}>
-            Pong
+            PongSurvey
           </Link>
           <ul className="right">
             { this.renderContent() }
